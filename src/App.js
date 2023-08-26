@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TodoList from "./components/TodoList/TodoList";
 import "./App.css";
-import { act } from "react-dom/test-utils";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -51,10 +50,33 @@ function App() {
     fetchData();
   }, []);
 
+  function removeTodo(id) {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  }
+
+  function updateTodo(id) {
+    const newList = todos.map((todoItem) => {
+      if (todoItem.id === id) {
+        const updateItem = { ...todoItem, completed: !todoItem.completed };
+        return updateItem;
+      }
+      return todoItem;
+    });
+    setTodos(newList);
+  }
+
   return (
     <div className="App">
       <h1 className="header">My todo list</h1>
-      {loading ? "Loading" : <TodoList todos={todos} />}
+      {loading ? (
+        "Loading"
+      ) : (
+        <TodoList
+          todos={todos}
+          removeHandler={removeTodo}
+          updateTodo={updateTodo}
+        />
+      )}
 
       <div className="add-todo-form">
         {saving ? (

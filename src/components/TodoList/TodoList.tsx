@@ -8,13 +8,15 @@ type todoProps = {
     title: string;
     completed: boolean;
   }>;
+  updateTodo: (id: number) => void;
+  removeHandler: (id: number) => void;
 }
 
-const TodoList: React.FC<todoProps> = ({ todos }) => {
+const TodoList: React.FC<todoProps> = ({ todos, updateTodo, removeHandler}) => {
   return (
     <div className="TodoList">
       {todos.map((todo, index) => (
-        <TodoItem key={index} todo={todo} />
+        <TodoItem key={index} todo={todo} removeHandler={removeHandler} updateTodo={updateTodo} />
       ))}
     </div>
   );
