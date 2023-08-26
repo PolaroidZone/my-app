@@ -1,9 +1,12 @@
+/* eslint-disable testing-library/await-async-utils */
 import React from "react";
 import {
   fireEvent,
   render,
   screen,
   waitForElementToBeRemoved,
+  act,
+  waitFor,
 } from "@testing-library/react";
 import App from "./App";
 
@@ -21,12 +24,12 @@ describe("<App /> tests", () => {
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 
-  it('should add a todo item', async () => {
+  it("should add a todo item", async () => {
     fetchMock.once(
       JSON.stringify({
         userId: 3,
         id: Math.floor(Math.random() * 100) + 1,
-        title: 'Do math homework',
+        title: "Do math homework",
         completed: false,
       })
     );
@@ -41,11 +44,18 @@ describe("<App /> tests", () => {
     expect(todo).toBeInTheDocument();
   });
 
-  // it('remove todo from list', async () => {
-  //   render(<App />);
-  //   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-  //   fireEvent.click(screen.getByTestId('close-btn-3'));
-  //   expect(screen.queryByText(/Take out the trash/i)).not.toBeInTheDocument();
-  // });
-  
+  it("should remove todo from list", async () => {
+    render(<App />);
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+    fireEvent.click(screen.getByTestId("close-btn-4"));
+    const title = screen.queryByText(/write a blog post/i);
+    expect(title).not.toBeInTheDocument();
+  });
+
+  it("todo item should be crossed out after completion", async () => {
+    render(<App />);
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+    userEvent.click(screen.getByTestId("checkbox-1"));
+    waitFor(() => expect(screen.queryByText(/Eat breakfast/i)).toHaveClass("completed"));
+  });
 });
